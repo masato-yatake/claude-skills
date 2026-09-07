@@ -1,0 +1,6 @@
+{
+  "name": "screen-guide",
+  "description": "Chromeで開いている画面を番号付きの図と解説カードで1枚のHTMLにする",
+  "author": { "name": "Masato Yatake" },
+  "license": "MIT"
+}

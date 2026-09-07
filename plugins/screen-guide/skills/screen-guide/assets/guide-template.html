@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{画面名}} の見方</title>
+<style>
+  /* 配色：実画面のテーマに合わせて差し替える */
+  :root{--bg:#fff;--panel:#f4f5f7;--fg:#333;--muted:#7a8291;--line:#dfe3ea;--mark:#ff4d5e}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e8ebf0;color:var(--fg);font:14px/1.6 -apple-system,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  .wrap{max-width:1000px;margin:20px auto;padding:0 14px}
+  h1{font-size:19px;margin:0 0 4px}
+  .lead{color:var(--muted);margin:0 0 16px;font-size:13px}
+  h2.sc{font-size:15px;margin:26px 0 8px}
+  h2.sc small{color:var(--muted);font-weight:400;margin-left:8px}
+  /* 図はスマホで縮めず横スクロール（縮めると読めない） */
+  .scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .shot{background:var(--bg);border:1px solid var(--line);border-radius:8px;font-size:11px;min-width:760px;padding:14px} /* padding は番号のはみ出し防止。テーマ差し替え時も0にしない */
+  .fold{border:1px dashed var(--line);color:var(--muted);text-align:center;padding:6px;border-radius:4px;margin:6px 0;font-size:10px}
+
+  /* 赤枠：要素そのものに class="f" を着ける（必須）。番号は要素の左上に自動で付く */
+  .f{position:relative;outline:2px solid var(--mark);outline-offset:-1px;border-radius:3px;margin:8px 0} /* margin は隣の赤枠に番号が食い込まないため */
+  .f>.m{position:absolute;left:-8px;top:-9px}
+  .m{width:22px;height:22px;border-radius:50%;background:var(--mark);color:#fff;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.35);z-index:5;text-decoration:none;cursor:pointer}
+  .m:hover{transform:scale(1.12)}
+  .f.hit{outline-width:4px;box-shadow:0 0 0 4px rgba(255,77,94,.35)}
+  /* 案6：番号にホバーすると対応する赤枠が光る（押した後の .hit と同じ見た目。ホバー＝予告／クリック＝確定）。.pre は :has() 非対応環境のフォールバック */
+  .f:has(>.m:hover),.f.pre{outline-width:4px;box-shadow:0 0 0 4px rgba(255,77,94,.35);transition:box-shadow .15s,outline-width .15s}
+
+  .legend{margin-top:26px}
+  .legend h2{font-size:16px;margin:0 0 10px}
+  .item{display:grid;grid-template-columns:32px 1fr;gap:10px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 13px;margin-bottom:8px;scroll-margin-top:12px}
+  .item.hit{outline:2px solid var(--mark)}
+  .item .n{width:24px;height:24px;border-radius:50%;background:var(--mark);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
+  .item h3{margin:0 0 3px;font-size:14px}
+  .item p{margin:0;font-size:13px}
+  .item .where{font-size:11px;color:var(--muted);margin-bottom:3px}
+  .foot{color:var(--muted);font-size:12px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>{{画面名}} の見方</h1>
+  <p class="lead">{{YYYY-MM-DD}} に {{読者}} の Chrome（{{ログイン状態・表示テーマ}}）で見た実画面をもとに描いています。赤枠が範囲、左上の番号を押すと解説へ、解説の番号を押すと図へ戻ります。スマホでは図を横にスクロールしてください。</p>
+
+  <!-- ゾーン（または画面）ごとに .scroller > .shot を1つ -->
+  <h2 class="sc">画面A　{{ゾーン名}}<small>{{URL または メニュー階層}}</small></h2>
+  <div class="scroller"><div class="shot">
+    <!-- 実画面をHTML/CSSで描き直す。番号を振る要素（またはそれを包む div）に class="f" と <a class="m" data-t="pN"> を付ける。
+         座標指定（position:absolute; left/top）で枠を置かない：幅が変わるとズレる -->
+    <div class="f"><a class="m" data-t="p1">1</a>
+      {{要素の中身。文言は実物のまま}}
+    </div>
+    <div class="fold">…（中略）{{省いた領域の名前}}</div>
+  </div></div>
+
+  <div class="legend">
+    <h2>番号ごとの解説</h2>
+    <div class="item" id="p1"><div class="n">1</div><div>
+      <div class="where">画面A・{{位置}}</div>
+      <h3>{{要素名}} ＝ {{意味を言い切る}}</h3>
+      <p>{{押す／入れるとどうなるか。読者に合わせた一言があれば添える}}</p>
+    </div></div>
+    <p class="foot">読む順番の目安：{{③ → ④ → … と理由を1行}}</p>
+    <p class="foot">未確認点：{{実物で確認できなかったこと。なければ「なし」}}</p>
+  </div>
+</div>
+<script>
+/* 番号→カード、カード番号→図 の双方向ジャンプ。href="#pN" はプレビューで外部リンク扱いになるため使わない */
+document.addEventListener('click', function(e){
+  var a = e.target.closest('.m'); if(!a) return;
+  e.preventDefault();
+  var el = document.getElementById(a.getAttribute('data-t')); if(!el) return;
+  document.querySelectorAll('.hit').forEach(function(x){x.classList.remove('hit')});
+  el.classList.add('hit');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+});
+document.querySelectorAll('.item').forEach(function(it){
+  var n = it.querySelector('.n'); if(!n) return;
+  n.title='図へ戻る';
+  n.addEventListener('click', function(){
+    var num = it.id.replace('p','');
+    var m = Array.from(document.querySelectorAll('.f>.m')).find(function(x){return x.textContent.trim()===num});
+    if(!m) return;
+    var box = m.parentElement;
+    document.querySelectorAll('.hit').forEach(function(x){x.classList.remove('hit')});
+    box.classList.add('hit');
+    box.scrollIntoView({behavior:'smooth', block:'center', inline:'center'});
+  });
+});
+/* 案6 フォールバック：:has() が効かない環境でも番号ホバーで枠を光らせる */
+document.querySelectorAll('.f>.m').forEach(function(m){
+  m.addEventListener('mouseenter',function(){m.parentElement.classList.add('pre')});
+  m.addEventListener('mouseleave',function(){m.parentElement.classList.remove('pre')});
+});
+</script>
+</body>
+</html>
