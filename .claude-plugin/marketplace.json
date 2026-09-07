@@ -1,0 +1,13 @@
+{
+  "name": "masato-yatake-skills",
+  "owner": { "name": "Masato Yatake" },
+  "description": "Claude Code skills by Masato Yatake",
+  "plugins": [
+    {
+      "name": "screen-guide",
+      "source": "./plugins/screen-guide",
+      "description": "Chromeで開いている画面を番号付きの図と解説カードで1枚のHTMLにする",
+      "license": "MIT"
+    }
+  ]
+}
