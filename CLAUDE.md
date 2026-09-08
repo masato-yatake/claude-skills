@@ -11,3 +11,4 @@ Claude Code スキルの公開マーケットプレイス（Public・MIT）。
 - 変更は claude/〜 ブランチ＋PR。マージは Masato。
 - 公開リポなので、農場固有の情報（住所・金額・氏名以外の個人情報）は書かない。
 - 変更後は `claude plugin validate .` を通す。
+- claude CLI が PATH に無いときは `C:\Users\atama\AppData\Roaming\Claude\claude-code\<バージョン>\claude.exe` をフルパスで使う（バージョン番号はフォルダを見て最新を選ぶ。現時点の最新は 2.1.260）。
